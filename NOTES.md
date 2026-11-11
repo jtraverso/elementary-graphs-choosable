@@ -90,3 +90,50 @@ All modules compile (lean v4.35.0-rc3, Mathlib c55e6e7, galvin-dinitz @ 84dcda4)
 axioms propext, Classical.choice, Quot.sound; Challenge and Solution statements and definitions
 identical under `pp.all`. Proved statements: `ElemChoos.choosable_of_rep`,
 `chromaticChoosable_of_rep`, `isElementary_of_rep`, `rep_of_lineGraph`, `rep_of_cobipartite`.
+
+## Maffray–Reed "only if" (elementary ⇒ augmentation): planning, 2026-11-11
+
+### Source access
+* doi:10.1006/jctb.1998.1872 is Elsevier "bronze" open archive, but only through
+  sciencedirect.com, which answers 403 to curl/WebFetch and shows a CAPTCHA in the browser
+  (not bypassed). OpenAlex and Semantic Scholar list no other copy; HAL and arXiv have none.
+* Gravier–Maffray–Pastor, arXiv:1506.02576 (Thm 1.8), restates MR with the normalization
+  "every augment has a non-adjacent pair and its X–Y edge graph is connected", **without proof**.
+  Downloaded to `C:\lean\elementary_choosable_downloads\gmp.pdf`.
+* The structure proof therefore has to be reconstructed. No reconstruction is complete yet.
+
+### Planned self-contained route (target: `IsElementary G → ∃ a b hubA hubB, IsAugLineGraphRep …`)
+1. **Twin reduction (proved on paper, easy).** If `u ≠ v` are adjacent with `N[u] = N[v]`, a
+   representation of `G - v` extends by giving `v` the ends of `u` (`a v := a u`, `b v := b u`).
+   All five conditions of `IsAugLineGraphRep` transfer. So by induction we may assume `G` has no
+   true twins. Then every edge lies in an induced P3, i.e. in a component of the Gallai graph.
+2. **Candidate representation for twin-free `G` with a fixed red/blue colouring.**
+   `a v` = red component of `v`, `b v` = blue component; `hubA` / `hubB` = components that are
+   not "red (blue) cliques" (some pair inside not joined by an edge of that colour).
+   Condition (4) is then automatic. The others reduce to:
+   * (N1) two non-adjacent vertices are never in the same red component and the same blue component;
+   * (N2) a red (blue) hub component meets at most two blue (red) components;
+   * (N3) no vertex lies in both a red hub and a blue hub.
+   Checked on examples: in the 2+2 augment with a perfect matching of missing pairs, the swapped
+   colouring makes the construction return the line graph of C4 plus two pendant edges, a valid
+   alternative representation. (N1)–(N3) **fail without twin reduction**: K5 minus an edge with a
+   valid colouring gives a vertex in two hubs.
+3. **Core structural lemma needed (open).** In a twin-free elementary graph, every vertex has a
+   monochromatic red neighbourhood R(v) and a monochromatic blue neighbourhood B(v) ("MN"). Then a
+   red component is either a red clique or bipartite in red with blue-clique sides X, Y lying in
+   two different blue components that are blue cliques, and (N1)–(N3) follow by short arguments.
+   Facts proved so far toward MN: R(v), B(v) are cliques. Equal colours on uv, vw force u ~ w. If
+   R(v) is mixed there are a, b, c ∈ R(v) with ab red and ac blue, and then
+   N(a)∖N[v] = N(c)∖N[v] (all blue). Every distinguisher of a, c lies in B(v). A distinguisher
+   z ∈ B(v) of a, c reproduces the same mixed pattern at a (R(a) ∋ v, b, z with vb red, vz blue).
+   The pattern propagates, so MN needs a global or extremal argument, and that is not found.
+   Model graphs satisfy MN (inside a non-hub star, twin-freeness puts all internal edges in one
+   Gallai component), but proving that for an arbitrary valid colouring is equivalent to the
+   theorem.
+
+### Estimate
+* With a correct paper proof in hand: twin reduction ~300 lines; MN and the component lemmas
+  ~1.5–3k lines of case analysis; assembly ~500 lines; new headline theorems ~150 lines. In
+  total ~2.5–4k lines, within the 5k budget.
+* The blocking item is not size. It is the missing proof of MN (the content of MR's theorem), and
+  the original source cannot be reached from this machine.
