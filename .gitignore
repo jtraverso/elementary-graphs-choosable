@@ -1,0 +1,6 @@
+.lake/
+*.olean
+*.ilean
+.env
+.env.*
+_check_*.lean

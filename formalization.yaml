@@ -1,0 +1,133 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Elementary graphs are chromatic-choosable (for the Maffray–Reed class of augmented bipartite line graphs)"
+  description: >-
+    A Lean 4 / Mathlib formalization of the proof of Narayanan, Vasudevan and Somasundaram
+    (arXiv:2610.16258) that elementary graphs satisfy ch(G) = χ(G) = ω(G), for the class that the
+    Maffray–Reed theorem produces: augmentations of line graphs of bipartite multigraphs, given by
+    an explicit edge representation (IsAugLineGraphRep: vertex v is the edge {a v, b v} of a
+    bipartite multigraph; non-adjacent pairs sharing an end share exactly one end, which is a hub
+    with at most two neighbours; no edge joins two hubs). Proved: clique number at most k implies
+    k-choosability for every colour type (choosable_of_rep), ch = χ = ω with the choice number
+    defined through lists of natural numbers (chromaticChoosable_of_rep), every graph of the class
+    is elementary (isElementary_of_rep), and line graphs of bipartite multigraphs and complements
+    of bipartite graphs belong to the class. NOT proved: the "only if" direction of Maffray–Reed
+    (an elementary graph is such an augmentation), so the theorem is not stated for all elementary
+    graphs. The proof follows the paper (Hall, the Deficiency Lemma, saturation of a minimal
+    counterexample, Proposition 3.7, Galvin), except that the saturation step avoids Kőnig's
+    theorem by adding one missing pair at a time. Galvin's theorem for bipartite multigraphs is
+    imported as a lake dependency from PALOMAR-2026-10-18-000029 v2.
+  authors:
+    - "Juan Pablo Traverso Gianini"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Juan Pablo Traverso Gianini"
+
+classification:
+  arxiv: ["math.CO"]
+  msc2020: ["05C15", "05C17"]
+
+repository:
+  role: "substantive-development"
+
+sources:
+  - title: "Elementary graphs are chromatic-choosable"
+    authors:
+      - "Narayanan N"
+      - "Nandana K. Vasudevan"
+      - "K. Somasundaram"
+    id: "arXiv:2610.16258"
+    type: "preprint"
+    location: "arXiv:2610.16258v1 (2026): Theorems 1.1 and 3.4, Lemmas 2.1–2.5, 3.3–3.8, Proposition 3.7"
+    relationship: "formalizes"
+    note: >-
+      Theorem 1.1 is formalized for the class of augmentations of line graphs of bipartite
+      multigraphs; the reduction from elementary graphs to this class (Theorem 3.2, Maffray–Reed)
+      is not formalized. Lemma 2.3 (Kőnig) is not needed: Lemma 3.6(a) is proved by adding one
+      missing pair at a time, and Lemma 3.6(c) is replaced by a case split. The formalization is
+      by a different author; the article's authors were not involved.
+    license: "unknown"
+    author_endorsement: "not-contacted"
+  - title: "A description of claw-free perfect graphs"
+    authors:
+      - "Frédéric Maffray"
+      - "Bruce A. Reed"
+    id: "doi:10.1006/jctb.1998.1872"
+    type: "paper"
+    location: "J. Combin. Theory Ser. B 75 (1999), 134–156"
+    relationship: "background"
+    note: "The augmentation representation of elementary graphs (only the 'if' direction is formalized)."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+
+related_formalizations:
+  - id: "PALOMAR-2026-10-18-000029 v2 (jtraverso/galvin-dinitz @ 84dcda4)"
+    relationship: "builds-on"
+    note: "Pinned dependency: Galvin's theorem for finite bipartite multigraphs, GalvinMultigraph.galvin_of_degree_bound."
+
+status:
+  scope: >-
+    Theorem 1.1 for augmentations of line graphs of bipartite multigraphs (the Maffray–Reed class).
+    Not formalized: Maffray–Reed's theorem that every elementary graph is such an augmentation.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude Opus 5.5"]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        Read the paper, checked the proof, and wrote the Lean development (ElemChoos/*.lean), the
+        Challenge/Solution pair and the packaging under the author's direction. Checked with lean
+        against the pinned dependency, #print axioms and a comparison of the elaborated Challenge
+        and Solution statements (pp.all) (Lean v4.35.0-rc3, Mathlib
+        c55e6e786f49471c72fbddbec5415808896aec1e).
+      cost:
+        wall_time: "a few hours"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "Natural-language instructions in Spanish, directed by the author."
+  spend_usd: "subscription-based"
+  notes: >-
+    The result was chosen by the human author; the Lean development is AI-written under the
+    author's direction and mechanically verified: no sorry, axioms limited to propext,
+    Classical.choice and Quot.sound, identical elaborated statements in the Challenge and the
+    Solution.
+
+fidelity:
+  divergences: >-
+    The theorem is stated for graphs given with an augmentation representation, not for all
+    elementary graphs (the Maffray–Reed characterization is not formalized). The representation
+    is the normalized one of Lemmas 3.3 and 3.8 (augmented flat edges as stars of degree-2 hubs,
+    with the two edges multiplied); the condition that an augment has at least one X–Y edge is
+    dropped, which only enlarges the class (isElementary_of_rep shows the class stays inside the
+    elementary graphs). Elementary is a symmetric red/blue relation on pairs. Choosability uses
+    lists of natural numbers (choosable_of_rep allows any colour type); the choice number is an
+    ℕ∞-valued infimum like Mathlib's chromaticNumber.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "Claude Opus 5.5 (AI agent in Claude Code, acting for the author)"
+  notes: >-
+    Agent review by Claude Opus 5.5, separate from the mechanical verification. The agent checked
+    every step of the paper's proof and found no gap. Kőnig's theorem (Lemma 2.3) is avoidable,
+    and Lemma 3.6(c) is only needed to get r, s ≥ 1. It also checked that the class excludes the
+    claw and contains K(X,Y) − M and line graphs of bipartite multigraphs. No independent human
+    review has been performed.
+
+alignment:
+  namespace: "ElemChoos"
+  statements:
+    - {source: "Theorem 3.4 (augmentation class): ω ≤ k ⇒ k-choosable", lean: "ElemChoos.choosable_of_rep", module: "ElemChoosChallenge", status: "proved"}
+    - {source: "Theorem 1.1 (augmentation class): ch = χ = ω", lean: "ElemChoos.chromaticChoosable_of_rep", module: "ElemChoosChallenge", status: "proved"}
+    - {source: "Theorem 3.2 'if' direction (Maffray–Reed): augmentations are elementary", lean: "ElemChoos.isElementary_of_rep", module: "ElemChoosChallenge", status: "proved"}
+    - {source: "§1: line graphs of bipartite multigraphs are in the class", lean: "ElemChoos.rep_of_lineGraph", module: "ElemChoosChallenge", status: "proved"}
+    - {source: "§1: complements of bipartite graphs are in the class", lean: "ElemChoos.rep_of_cobipartite", module: "ElemChoosChallenge", status: "proved"}
+
+acknowledgements: >-
+  Mathlib and the Lean community.

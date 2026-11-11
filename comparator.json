@@ -1,0 +1,18 @@
+{
+  "challenge_module": "ElemChoosChallenge",
+  "solution_module": "ElemChoosSolution",
+  "theorem_names": [
+    "ElemChoos.choosable_of_rep",
+    "ElemChoos.chromaticChoosable_of_rep",
+    "ElemChoos.isElementary_of_rep",
+    "ElemChoos.rep_of_lineGraph",
+    "ElemChoos.rep_of_cobipartite"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}

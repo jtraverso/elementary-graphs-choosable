@@ -1,0 +1,29 @@
+name = "elementary_choosable"
+version = "0.1.0"
+defaultTargets = ["ElemChoos", "ElemChoosChallenge", "ElemChoosSolution"]
+requiresModuleSystem = true
+
+[leanOptions]
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.35.0-rc3"
+
+[[require]]
+name = "galvin_dinitz"
+git = "https://github.com/jtraverso/galvin-dinitz"
+rev = "84dcda4c2a760f2b52b7e813affe7e6968f8bfce"
+
+[[lean_lib]]
+name = "ElemChoos"
+globs = ["ElemChoos.+"]
+
+[[lean_lib]]
+name = "ElemChoosChallenge"
+roots = ["ElemChoosChallenge"]
+
+[[lean_lib]]
+name = "ElemChoosSolution"
+roots = ["ElemChoosSolution"]
