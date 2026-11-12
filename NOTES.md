@@ -251,9 +251,15 @@ Source: `C:\lean\elementary_choosable_downloads\mr.pdf` / `mr.txt` (JCTB 75 (199
     to K_1, against zk blue for a neighbour k of l. **Proved.**
   * i = 2, z ~ 0: again x ~ z, and zr′ is blue via x. Then r′l is red (P3 z–r′–l), so ml
     would be blue (P3 m–l–r′). But ml is a cross edge, hence red. **Proved.**
-  * i = 2, z ≁ 0: **open.** The local configuration {x, 0, l, r′, k, k′, z, m} admits an
-    elementary colouring. In the instance l = 2, k = 3, k′ = 4 the contradiction comes from the
-    core vertex 1, but no general argument yet.
+  * i = 2, z ≁ 0: **proved (later the same day).**
+    * z is red to every c ∈ K_1 that it sees (P3 z–c–0).
+    * For k ∈ K_2: if zk is red then N(k)∩K_1 = N(z)∩K_1 (P3 z–k–c and P3 c–z–k), and if mk
+      is red then N(k)∩K_1 = N(m)∩K_1 (P3 m–k–c and P3 c–m–k).
+    * P3 z–k–m makes exactly one of zk, mk red, so every K_2-vertex has K_1-neighbourhood
+      N(z)∩K_1 or N(m)∩K_1.
+    * Vertex 2 separates 3 from 4, so these two sets are N(3)∩K_1 and N(4)∩K_1. Hence 1 sees
+      both z and m, and {1; 0, z, m} is a claw.
+  * **Case 3 is fully repaired**, using only claw-freeness, the P3 rule and claim (1).
 * Not yet checked in detail: claim (1) cases (a)–(d), Case 1, Case 2, the A-component
   modification (pp. 146–147) and Theorem 5 (gem and 4-wheel cases), each with its
   forbidden-subgraph steps redone as colour contradictions.
@@ -262,3 +268,27 @@ Source: `C:\lean\elementary_choosable_downloads\mr.pdf` / `mr.txt` (JCTB 75 (199
 About 6–8k Lean lines once the remaining subcase is repaired: forbidden-subgraph and colour
 lemmas, Theorem 5, the growth procedure as a maximal valid list, claims (1)–(2), A-components,
 compression with Norm, atoms and components, and the final assembly to `IsAugLineGraphRep`.
+
+### Blueprint for the formalization (route (a), repaired)
+Fix a valid colouring `col` once. Work with vertex sets W ⊆ V (Finset) inside a fixed type,
+as in `ElemChoos.core`. The statement is P(W): ∃ a b : V → ℕ, hubA hubB, `RepOn W` ∧
+`NormOn W` (`IsAugLineGraphRep` restricted to W, plus Norm). Prove it by strong induction on |W|.
+1. `Elem.p3`: col u v ↔ ¬ col v w for every induced P3 in W. Derived: claw-free; no odd hole;
+   no odd antihole (step-2 cycle); explicit small contradictions as needed.
+2. Twins in W (adjacent, N[u]∩W = N[v]∩W): recurse on W∖{v}, give v the ends of u.
+3. W disconnected: recurse on both parts, interleave ends (2n, 2n+1).
+4. W connected and twin-free:
+   * (no gem and no 4-wheel) ⇒ no bend (gem/4-wheel lemma) ⇒ LGB: a, b = least index in the
+     red (blue) class, no hubs.
+   * (gem or 4-wheel) and no D ⇒ cobipartite (MR Theorem 5, gem and 4-wheel cases; the odd
+     antihole step uses item 1) ⇒ rep with one fresh hub per component of the cross graph
+     (Norm).
+   * D present ⇒ strong homogeneous pair. The growth procedure is a maximal valid list
+     (finite: nodup lists). Claims (1)–(2) by minimal index: (1) as in MR; (2) Cases 1–2 as in
+     MR, each forbidden subgraph replaced by a colour/claw contradiction; Case 3 as repaired
+     above. Then the A-component modification (pp. 146–147). Compress to
+     W′ = W∖(C1∪C2) ∪ {a, b}, recurse, and augment by the Norm construction.
+5. Final: P(univ) with any elementary colouring, then `choosable_of_rep` /
+   `chromaticChoosable_of_rep` give Theorem 1.1 for every elementary graph.
+Before formalizing each forbidden-subgraph step, check it with a brute-force colouring search
+on the named vertices (scripts in `elementary_choosable_deps\search`).
