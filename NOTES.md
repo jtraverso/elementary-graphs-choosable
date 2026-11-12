@@ -137,3 +137,67 @@ identical under `pp.all`. Proved statements: `ElemChoos.choosable_of_rep`,
   total ~2.5–4k lines, within the 5k budget.
 * The blocking item is not size. It is the missing proof of MN (the content of MR's theorem), and
   the original source cannot be reached from this machine.
+
+## Maffray–Reed with the paper in hand (2026-11-11, later)
+
+Source: `C:\lean\elementary_choosable_downloads\mr.pdf` / `mr.txt` (JCTB 75 (1999) 134–156).
+
+### What MR actually prove, and how
+* Theorem 2: (i) elementary ⇔ (ii) claw-free, Berge and no "wonder" (pyramid, lighthouse,
+  mausoleum, garden, colossus) ⇔ (iii) augmentation of an LGB graph. The proof of the direction
+  we need is **(i) ⇒ (ii) ⇒ (iii)**, entirely through forbidden induced subgraphs. It is not a
+  colouring argument.
+  * (ii) ⇒ (iii) needs Theorem 3 (L(bipartite) = no claw, diamond or odd hole; root built from
+    maximal cliques, bipartite because there is no odd hole), Theorem 4 (multigraph version:
+    gem, 4-wheel) and Theorem 5 (no claw, odd hole, odd antihole, D or pyramid ⇒ LGB or
+    cobipartite).
+  * Then the main procedure: from a D, grow a strong homogeneous pair (C1, C2) with labelled
+    insertion. Claims (1) and (2) are proved by minimal-label case analysis (Cases 1–3, about
+    15 forbidden-subgraph contradictions). After that comes the A-component modification, and
+    induction by compression.
+* Section 4 (skeleton) normalizes augments: there is a non-adjacent pair, and the X–Y graph is
+  connected (Lemma 1, (3), (4)). Theorem 6 then shows that, for G not cobipartite, in **every**
+  elementary colouring the colour components are complete multipartite (cliques of atoms) or
+  exactly the incomplete bipartite X_i–Y_i graphs. That is the construction of the previous
+  section, applied to atoms, but MR derive it from Theorem 2, not independently.
+
+### Gap found in the paper (minor, fixable)
+* p. 143 (proof of (ii) ⇒ (iii)): "if a compression G′ of G has the structure required in
+  (iii) then so does G: we simply augment along the edge ab. (Note that the flat edge ab cannot
+  be within some augment of G′, because all edges inside an augment lie in a triangle)."
+* As stated, the parenthetical is false. Take the augment X = {x1, x2}, Y = {y1} with only
+  x1y1, replacing an isolated edge xy. Then x1x2 is an edge inside the augment that lies in no
+  triangle.
+* It becomes true once the induction hypothesis is the normalized form of Section 4 (each augment
+  has a non-adjacent pair and a connected X–Y graph; then every edge inside an augment lies in a
+  triangle). That normalization comes later in the paper (skeleton minimality), so the induction
+  should carry it. It is a presentation gap, not a wrong theorem.
+
+### Computer evidence (scripts in `C:\lean\elementary_choosable_deps\search\`)
+* **MN is false in general.** In the twin-free cobipartite graph G = complement of (P4 + K2 + K1)
+  (7 vertices) some valid colourings give mixed red neighbourhoods, and the "red/blue component"
+  construction fails (one red and one blue component contain everything).
+* For **connected, twin-free, non-cobipartite** elementary graphs the construction (a = red
+  component, b = blue component, hubs = components that are not monochromatic cliques) satisfied
+  `IsAugLineGraphRep` and MN in every test:
+  * all 29 such graphs with ≤ 7 vertices (atlas), all colourings;
+  * about 43,000 random (graph, colouring) pairs from random augmentations of bipartite-multigraph
+    line graphs, up to roughly 15 vertices.
+
+  This matches MR's Theorem 6, but a direct proof is not known (MR derive it from Theorem 2).
+  Cobipartite components are covered by `rep_of_cobipartite`.
+
+### Route options and estimates
+1. **Faithful MR route** ((i) ⇒ (ii) ⇒ (iii) plus the Section 4 normalization).
+   * Forbidden subgraphs from elementarity: about 600 lines (claw, odd hole, odd antihole, five
+     wonders, D).
+   * Theorems 3–5 (or a colouring replacement for 3–4): about 1.3–1.8k.
+   * Main procedure (labelled growth, claims (1)–(2), A-components): about 1.5–2k.
+   * Compression/augmentation induction with normalization, conversion to `IsAugLineGraphRep`:
+     about 1–1.5k.
+   * Atoms/twins, components, assembly: about 0.4k.
+   * **Total about 5–6.5k lines**, the main risk being the labelled-insertion procedure.
+2. **Colouring route** (twins → components → Theorem-6-type statement for non-cobipartite
+   components). Probably shorter (2.5–4k), but it needs a new proof of "MN failure ⇒
+   cobipartite" for connected twin-free elementary graphs. Mixed configurations seen so far are
+   K4's {v,a,b,c} with a, c in one clique and v, b in the other, but no proof yet.
