@@ -201,3 +201,64 @@ Source: `C:\lean\elementary_choosable_downloads\mr.pdf` / `mr.txt` (JCTB 75 (199
    components). Probably shorter (2.5–4k), but it needs a new proof of "MN failure ⇒
    cobipartite" for connected twin-free elementary graphs. Mixed configurations seen so far are
    K4's {v,a,b,c} with a, c in one clique and v, b in the other, but no proof yet.
+
+## Route decision, 2026-11-11 (coordinator: (b) bounded, then (a))
+
+### (b) "mixed colouring ⇒ cobipartite": no proof found (time box used)
+* Evidence for it is strong: no counterexample among connected twin-free graphs with ≤ 7 vertices
+  (atlas), about 40k random colourings of random augmentations up to roughly 15 vertices, and
+  about 3k random cobipartite graphs.
+* No candidate cobipartition was found in terms of the configuration vertices. No pair among
+  R[x], B[x] for x ∈ {v, a, b, c} always covers V; the mixed vertex sets are spread over both
+  cliques (a, c in one, v, b in the other, the rest decided globally). It is a global
+  statement and I have no proof.
+* Equivalent target found and tested ("Theorem R"): in a connected, twin-free, non-cobipartite
+  elementary graph, every red component that is not a red clique is red-bipartite with clique
+  sides X, Y, and (X, Y) is a strong homogeneous pair. 0 failures in all tests. It **fails with
+  twins** (atlas: 93 non-bipartite, 11 non-homogeneous). Also unproved.
+
+### Proved on paper (usable in either route)
+* **Twin-free + bend ⇒ induced gem or 4-wheel.** Take a bend u R v R w with uw blue. A
+  distinguisher z of u, w gives a diamond z-{u,v}-w. A distinguisher y of u, v is then blue to
+  w (or to z) and closes a gem (y ≁ z) or a 4-wheel (y ~ z) centred at u (or at v). Hence
+  **twin-free with no gem and no 4-wheel ⇒ no bend ⇒ red and blue are equivalence relations ⇒
+  LGB** with a = red class and b = blue class, and no hubs. This replaces MR's Theorems 3–4.
+* **No odd antihole:** in C̄_n (n odd, n ≥ 7) the P3s i–j–(i+1) force
+  col{j, j+2} ≠ col{j−2, j}. The step-2 cycle has odd length n, so this is a contradiction.
+* **Compression with the corrected ordering.** Carry the invariant Norm through the induction:
+  every hub has two classes, each of size ≥ 2, and a connected, incomplete cross graph.
+  * Under Norm, a flat edge ab is a = (s, t_a), b = (s, t_b) with star(s) = {a, b} and
+    s, t_a, t_b non-hubs.
+  * Augmenting a strong homogeneous pair (C1, C2): give every vertex of C1 the ends (γ_j, t_a)
+    and every vertex of C2 the ends (γ_j, t_b), with a fresh γ_j for each connected component j
+    of the C1–C2 graph. γ_j is a hub iff that component is incomplete. Norm is preserved.
+    Twins (parallel copies) and disjoint unions preserve Norm.
+
+### (a) Faithful MR: a second, real gap in the source
+* p. 145–146, Case 3 of claim (2) is internally inconsistent as printed. Case 3 assumes
+  "z misses m", but the text then says "If 0 is not in T then (since z sees all of K_i) m and a
+  vertex j of K_{3−i} are in T", with T a triangle containing z. It also says "Since G has no
+  odd antihole this cycle must be a triangle" (an odd hole is meant). The "odd induced cycle
+  containing z" built from "an odd path from m to l in B0" is not specified: z sees neither m
+  nor l, and the cycle is induced in an auxiliary bipartite graph, not in G.
+* Repair in progress, using colours. After claim (1): all C1–C2 edges are red and all 0–C1
+  edges are blue (P3s x–0–c and 0–c1–c2), and every K-vertex has a cross neighbour of smaller
+  label.
+  * i = 1, z ≁ 0: z is red to all of K_1 (P3 z–k–0). A cross neighbour of l forces blue.
+    Contradiction. **Proved.**
+  * i = 1, z ~ 0: z0 is red, so x ~ z. Claws at the neighbours of l and r′ (r′ ∈ K_2 missed by
+    m) force m ~ l, z ~ r′ and r′ complete to K_1. Then m is blue to K_1 (P3 m–k–r′), z is red
+    to K_1, against zk blue for a neighbour k of l. **Proved.**
+  * i = 2, z ~ 0: again x ~ z, and zr′ is blue via x. Then r′l is red (P3 z–r′–l), so ml
+    would be blue (P3 m–l–r′). But ml is a cross edge, hence red. **Proved.**
+  * i = 2, z ≁ 0: **open.** The local configuration {x, 0, l, r′, k, k′, z, m} admits an
+    elementary colouring. In the instance l = 2, k = 3, k′ = 4 the contradiction comes from the
+    core vertex 1, but no general argument yet.
+* Not yet checked in detail: claim (1) cases (a)–(d), Case 1, Case 2, the A-component
+  modification (pp. 146–147) and Theorem 5 (gem and 4-wheel cases), each with its
+  forbidden-subgraph steps redone as colour contradictions.
+
+### Estimate (unchanged order of magnitude)
+About 6–8k Lean lines once the remaining subcase is repaired: forbidden-subgraph and colour
+lemmas, Theorem 5, the growth procedure as a maximal valid list, claims (1)–(2), A-components,
+compression with Norm, atoms and components, and the final assembly to `IsAugLineGraphRep`.

@@ -117,8 +117,13 @@ review:
     Agent review by Claude Opus 5.5, separate from the mechanical verification. The agent checked
     every step of the paper's proof and found no gap. Kőnig's theorem (Lemma 2.3) is avoidable,
     and Lemma 3.6(c) is only needed to get r, s ≥ 1. It also checked that the class excludes the
-    claw and contains K(X,Y) − M and line graphs of bipartite multigraphs. No independent human
-    review has been performed.
+    claw and contains K(X,Y) − M and line graphs of bipartite multigraphs. The agent also read
+    Maffray–Reed's proof of the characterization (not formalized here) and found two exposition
+    gaps: p. 143, "all edges inside an augment lie in a triangle", fails for non-normalized
+    augments (e.g. X = {x1, x2}, Y = {y1}, only x1y1), so the compression induction must carry
+    the Section 4 normalization; and pp. 145–146, Case 3 of claim (2), is internally
+    inconsistent as printed (a triangle containing z and m although z misses m). Details in
+    NOTES.md. No independent human review has been performed.
 
 alignment:
   namespace: "ElemChoos"
