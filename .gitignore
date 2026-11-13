@@ -4,3 +4,10 @@
 .env
 .env.*
 _check_*.lean
+build.log
+pkgchk.log
+checks/
+build_full.log
+chain.log
+bisect.log
+claim2.log

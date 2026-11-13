@@ -292,3 +292,59 @@ as in `ElemChoos.core`. The statement is P(W): ∃ a b : V → ℕ, hubA hubB, `
    `chromaticChoosable_of_rep` give Theorem 1.1 for every elementary graph.
 Before formalizing each forbidden-subgraph step, check it with a brute-force colouring search
 on the named vertices (scripts in `elementary_choosable_deps\search`).
+
+## Maffray–Reed formalized (2026-11-12): `ElemChoos/MR/*.lean`
+
+### Statements added
+* `ElemChoos.rep_of_isElementary` — every finite elementary graph has an `IsAugLineGraphRep`
+  (MR Theorem 2, (i) ⇒ (iii)), with ends in `ℕ`.
+* `ElemChoos.choosable_of_isElementary`, `ElemChoos.chromaticChoosable_of_isElementary` —
+  Theorems 3.4 and 1.1 for all finite elementary graphs (via `choosable_of_rep`,
+  `chromaticChoosable_of_rep`). The old statements are kept unchanged.
+
+### Route actually formalized (all inside one fixed elementary colouring `ECol`)
+* `MR/Basic.lean`: `ECol` (0/1 colour `c`, `c u v + c v w = 1` on induced P3s) and the tactic
+  `elem_contra K [v₁,…,vₙ]`: it adds every P3 equation among the listed vertices whose
+  (non-)adjacencies are hypotheses, the symmetry equations, and calls `omega` (odd Gallai cycle
+  = parity contradiction). Every forbidden configuration used by MR (claw, 5-hole, pyramid,
+  lighthouse, mausoleum, garden, colossus) is refuted this way; no wonder is defined.
+* `MR/Rep.lean`, `MR/Easy.lean`: `RepOn`/`NormOn` on a vertex set (sides indexed by `Bool`),
+  side swap, twins (`twin_ext`), disjoint unions (`union_rep`), and the no-bend case
+  (`rep_of_noBend`: red/blue classes are the ends, no hubs; replaces MR Theorems 3–4).
+* `MR/Flat.lean`: under `NormOn`, a flat edge `ab` with another neighbour has the normal form
+  (shared non-hub end with star `{a,b}`, other ends distinct non-hubs) — this is the corrected
+  p. 143 remark. `MR/Aug.lean`, `MR/AugMain.lean`: augmenting back (`aug_rep`), one fresh end
+  per connected component of the cross graph, a hub iff both sides of the component have ≥ 2
+  vertices; `NormOn` is preserved.
+* `MR/Bend.lean`: twin-free + bend ⇒ induced gem or 4-wheel.
+* `MR/Gem.lean`, `MR/Wheel.lean`: MR Theorem 5 (gem without D; 4-wheel without gem) ⇒
+  cobipartite ⇒ strong homogeneous pair. The "no stable set of size 3 + no odd antihole"
+  step is replaced by the colouring: a vertex seeing all four path/square vertices goes to the
+  side given by one edge colour (same colour ⇒ adjacent by the P3 rule).
+* `MR/Growth.lean`, `MR/Claim2.lean`, `MR/Step.lean`: the growth procedure as an invariant
+  `Good` preserved by one addition (no labels): claim (1), "every vertex of Ci has a
+  neighbour in C(3−i), and a non-neighbour there unless it is p1/p3" (the only use of the
+  labels), and claim (2) as "no bad vertex". A `Good` pair of maximal size is final.
+* `MR/AStep.lean`: S1/S2/A/Z, A1/A2, the cliques, and the A-components as reachability; the
+  paper's shortest-path argument becomes an induction on `Relation.ReflTransGen`.
+* `MR/Final.lean`: induction on `W` (twins / disconnected / bend ⇒ D or gem or wheel ⇒ SHP ⇒
+  compress and augment / no bend ⇒ line graph), then the conversion to `IsAugLineGraphRep`.
+
+### Verification of the remaining parts of MR (claim (1), Cases 1–2, A-step, Theorem 5)
+All checked by brute force (`elementary_choosable_deps/search/checks_mr.py`, `checks_t5.py`,
+`t5detail.py`, `t5wdetail.py`, `wheelgems.py`, `gemclq.py`, `gemsplit.py`, `c3split.py`,
+`c2lists.py`, checker `cfgcheck.py`): every named configuration is non-elementary (or contains
+a D / gem where the paper uses D-freeness / gem-freeness), for every completion of the unknown
+adjacencies. Findings:
+* Claim (1) (a)–(d), Case 1, Case 2, the A-component step (pp. 146–147) and both cases of
+  Theorem 5: **correct as stated** (modulo the following remarks).
+* Theorem 5, gem case: the paper's "K1 is a clique" uses a D for `C12` vs `C123`; that pair is
+  in fact non-elementary (no D needed). D-freeness is needed only for the traces {1}, {4}
+  without the centre and for a vertex of Z adjacent to C12 or C34 (four explicit D's).
+* Theorem 5, 4-wheel case: vertices with three of the square must also see the centre (the
+  paper does not say it; it is not needed either). Gem-freeness is used for the traces 12, 14,
+  23, 34 and for C123–C124, C134–C234 and A–C (explicit gems in `Wheel.lean`).
+* Case 3 of claim (2): the repair recorded above (2026-11-11) is the one formalized; the i = 2,
+  z ≁ 0 subcase needs a 5-leaf case split on z~1, m~1, z~2, m~2 (`c3split.py`).
+* p. 143 gap: handled by the `NormOn` invariant (see above).
+No further gap found.

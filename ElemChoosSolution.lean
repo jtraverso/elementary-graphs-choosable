@@ -8,6 +8,7 @@ module
 public import Mathlib.Combinatorics.SimpleGraph.Clique
 public import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
 public import ElemChoos.Main
+public import ElemChoos.MR.Final
 
 /-!
 # Proofs of the statements in `ElemChoosChallenge.lean`
@@ -25,5 +26,8 @@ of the challenge, in the library `ElemChoos`:
 * `ElemChoos/Model.lean`: the representation, the minimal-counterexample induction and the
   line-graph case through Galvin's theorem `GalvinMultigraph.galvin_of_degree_bound`
   (jtraverso/galvin-dinitz, PALOMAR-2026-10-18-000029 v2, lake dependency);
-* `ElemChoos/Main.lean`: elementary graphs, choice number, `ch = χ = ω`.
+* `ElemChoos/Main.lean`: elementary graphs, choice number, `ch = χ = ω`;
+* `ElemChoos/MR/*.lean`: the Maffray–Reed theorem (every elementary graph is an augmentation of a
+  bipartite-multigraph line graph), `ElemChoos.rep_of_isElementary`, and Theorems 3.4 and 1.1
+  for all elementary graphs (`ElemChoos/MR/Final.lean`).
 -/

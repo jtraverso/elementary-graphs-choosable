@@ -9,7 +9,7 @@ public import Mathlib.Combinatorics.SimpleGraph.Clique
 public import Mathlib.Combinatorics.SimpleGraph.Coloring.Vertex
 
 /-!
-# Elementary graphs are chromatic-choosable (for the Maffray–Reed class)
+# Elementary graphs are chromatic-choosable
 
 Narayanan N, Nandana K. Vasudevan, K. Somasundaram, *Elementary graphs are chromatic-choosable*,
 arXiv:2610.16258 (2026), Theorem 1.1: every elementary graph `G` satisfies `ch(G) = χ(G) = ω(G)`.
@@ -28,9 +28,10 @@ joins two hubs. (The augment replacing a flat edge `xy` is the star of the hub `
 * `ElemChoos.isElementary_of_rep`: every graph of the class is elementary.
 * `ElemChoos.rep_of_lineGraph`, `ElemChoos.rep_of_cobipartite`: line graphs of bipartite
   multigraphs and complements of bipartite graphs belong to the class.
-
-Not formalized: the "only if" direction of Maffray–Reed (an elementary graph is such an
-augmentation).
+* `ElemChoos.rep_of_isElementary` (Maffray–Reed, Theorem 2, (i) ⇒ (iii)): every finite
+  elementary graph is such an augmentation.
+* `ElemChoos.choosable_of_isElementary`, `ElemChoos.chromaticChoosable_of_isElementary`:
+  Theorems 3.4 and 1.1 for every finite elementary graph.
 -/
 
 @[expose] public section
@@ -97,6 +98,25 @@ the class: a single hub. -/
 theorem rep_of_cobipartite (G : SimpleGraph V) (side : V → Bool)
     (h : ∀ u v, u ≠ v → side u = side v → G.Adj u v) :
     IsAugLineGraphRep G side (fun _ => ()) ∅ Set.univ := by
+  sorry
+
+/-- **Maffray–Reed (1999), Theorem 2, (i) ⇒ (iii).** Every finite elementary graph is an
+augmentation of the line graph of a bipartite multigraph. -/
+theorem rep_of_isElementary [Finite V] {G : SimpleGraph V} (hG : IsElementary G) :
+    ∃ (a b : V → ℕ) (hubA hubB : Set ℕ), IsAugLineGraphRep G a b hubA hubB := by
+  sorry
+
+/-- **Theorem 3.4.** In an elementary graph with clique number at most `k`, every assignment of
+lists of at least `k` colours admits a proper list colouring. -/
+theorem choosable_of_isElementary [Finite V] {G : SimpleGraph V} (hG : IsElementary G) {k : ℕ}
+    (hω : G.CliqueFree (k + 1)) (L : V → Finset C) (hL : ∀ v, k ≤ (L v).card) :
+    ∃ f : G.Coloring C, ∀ v, f v ∈ L v := by
+  sorry
+
+/-- **Theorem 1.1.** Every elementary graph is chromatic-choosable: `ch(G) = χ(G) = ω(G)`. -/
+theorem chromaticChoosable_of_isElementary [Finite V] {G : SimpleGraph V}
+    (hG : IsElementary G) :
+    choiceNumber G = G.chromaticNumber ∧ G.chromaticNumber = G.cliqueNum := by
   sorry
 
 end ElemChoos

@@ -123,7 +123,7 @@ theorem gemSide_clique {a1 a2 a3 a4 q u v : V} (hg : IsGem G a1 a2 a3 a4 q)
   have XA : ∀ x y, (x ≠ a1 ∧ x ≠ a2 ∧ x ≠ a3 ∧ x ≠ a4 ∧ x ≠ q) → G.Adj x a1 → G.Adj x a2 →
       (¬ G.Adj x a3 ∨ ¬ G.Adj x a4) → G.Adj y a1 → G.Adj y a2 → G.Adj y a3 → G.Adj y a4 →
       K.c y a2 = K.c a1 a2 → x ≠ y → G.Adj x y := by
-    intro x y ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 y1 y2 y3 y4 cy hxy
+    rintro x y ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 y1 y2 y3 y4 cy hxy
     by_contra hna
     rcases x34 with x3 | x4
     · elem_contra K [a1, a2, a3, a4, x, y]
@@ -133,7 +133,7 @@ theorem gemSide_clique {a1 a2 a3 a4 q u v : V} (hg : IsGem G a1 a2 a3 a4 q)
   have XX : ∀ x y, (x ≠ a1 ∧ x ≠ a2 ∧ x ≠ a3 ∧ x ≠ a4 ∧ x ≠ q) → G.Adj x a1 → G.Adj x a2 →
       (¬ G.Adj x a3 ∨ ¬ G.Adj x a4) → (y ≠ a1 ∧ y ≠ a2 ∧ y ≠ a3 ∧ y ≠ a4 ∧ y ≠ q) →
       G.Adj y a1 → G.Adj y a2 → (¬ G.Adj y a3 ∨ ¬ G.Adj y a4) → x ≠ y → G.Adj x y := by
-    intro x y ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 ⟨yn1, yn2, yn3, yn4, ynq⟩ y1 y2 y34 hxy
+    rintro x y ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 ⟨yn1, yn2, yn3, yn4, ynq⟩ y1 y2 y34 hxy
     by_contra hna
     by_cases x3 : G.Adj x a3 <;> by_cases x4 : G.Adj x a4 <;> by_cases y3 : G.Adj y a3 <;>
       by_cases y4 : G.Adj y a4 <;> by_cases xq : G.Adj x q <;> by_cases yq : G.Adj y q <;>

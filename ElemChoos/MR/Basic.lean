@@ -5,8 +5,7 @@ Authors: Juan Pablo Traverso Gianini
 -/
 module
 
-public import Mathlib.Combinatorics.SimpleGraph.Basic
-public import Mathlib.Data.Finset.Card
+public import ElemChoos.MR.Tactic
 
 /-!
 # Elementary colourings: basic facts and the configuration tactic
@@ -27,14 +26,6 @@ namespace ElemChoos.MR
 
 variable {V : Type*}
 
-/-- An elementary colouring of `G`, with values `0` (blue) and `1` (red). -/
-structure ECol (G : SimpleGraph V) where
-  /-- The colour of the pair `{u, v}`. -/
-  c : V → V → ℕ
-  le_one : ∀ u v, c u v ≤ 1
-  symm : ∀ u v, c u v = c v u
-  p3 : ∀ u v w, G.Adj u v → G.Adj v w → u ≠ w → ¬ G.Adj u w → c u v + c v w = 1
-
 /-- Discharge an adjacency goal from a hypothesis (in either orientation). -/
 macro "ec_adj" : tactic =>
   `(tactic| first | assumption | exact SimpleGraph.Adj.symm (by assumption))
@@ -54,54 +45,6 @@ macro "ec_nadj0" : tactic =>
 syntax "ec_nadj " term:max ppSpace term:max : tactic
 macro_rules
   | `(tactic| ec_nadj $_u $_w) => `(tactic| ec_nadj0)
-
-/-- Try to add the `P3` equation for `u - v - w`. -/
-syntax "ec_p3 " term:max ppSpace term:max ppSpace term:max ppSpace term:max : tactic
-macro_rules
-  | `(tactic| ec_p3 $K $u $v $w) =>
-    `(tactic| try have := ($K).p3 $u $v $w (by ec_adj) (by ec_adj) (by ec_ne) (by ec_nadj $u $w))
-
-syntax "ec_l3 " term:max ppSpace term:max ppSpace term:max " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| ec_l3 $_K $_u $_v []) => `(tactic| skip)
-  | `(tactic| ec_l3 $K $u $v [$w]) => `(tactic| ec_p3 $K $u $v $w)
-  | `(tactic| ec_l3 $K $u $v [$w, $ws,*]) =>
-    `(tactic| (ec_p3 $K $u $v $w); ec_l3 $K $u $v [$ws,*])
-
-syntax "ec_l2 " term:max ppSpace term:max " [" term,* "]" " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| ec_l2 $_K $_u [] [$_ws,*]) => `(tactic| skip)
-  | `(tactic| ec_l2 $K $u [$v] [$ws,*]) => `(tactic| ec_l3 $K $u $v [$ws,*])
-  | `(tactic| ec_l2 $K $u [$v, $vs,*] [$ws,*]) =>
-    `(tactic| (ec_l3 $K $u $v [$ws,*]); ec_l2 $K $u [$vs,*] [$ws,*])
-
-syntax "ec_l1 " term:max " [" term,* "]" " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| ec_l1 $_K [] [$_ws,*]) => `(tactic| skip)
-  | `(tactic| ec_l1 $_K [$_u] [$_ws,*]) => `(tactic| skip)
-  | `(tactic| ec_l1 $K [$u, $us,*] [$ws,*]) =>
-    `(tactic| (ec_l2 $K $u [$ws,*] [$us,*]); ec_l1 $K [$us,*] [$ws,*])
-
-syntax "ec_s2 " term:max ppSpace term:max " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| ec_s2 $_K $_u []) => `(tactic| skip)
-  | `(tactic| ec_s2 $K $u [$v]) => `(tactic| have := ($K).symm $u $v)
-  | `(tactic| ec_s2 $K $u [$v, $vs,*]) =>
-    `(tactic| (have := ($K).symm $u $v); ec_s2 $K $u [$vs,*])
-
-syntax "ec_s1 " term:max " [" term,* "]" " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| ec_s1 $_K [] [$_ws,*]) => `(tactic| skip)
-  | `(tactic| ec_s1 $K [$u] [$ws,*]) => `(tactic| ec_s2 $K $u [$ws,*])
-  | `(tactic| ec_s1 $K [$u, $us,*] [$ws,*]) =>
-    `(tactic| (ec_s2 $K $u [$ws,*]); ec_s1 $K [$us,*] [$ws,*])
-
-/-- `elem_contra K [v₁, …, vₙ]`: refute (or prove a linear consequence about `K.c`) using all
-induced `P3`s among the listed vertices whose adjacency facts are hypotheses. -/
-syntax "elem_contra " term:max " [" term,* "]" : tactic
-macro_rules
-  | `(tactic| elem_contra $K [$ws,*]) =>
-    `(tactic| (ec_l1 $K [$ws,*] [$ws,*]); (ec_s1 $K [$ws,*] [$ws,*]); omega)
 
 variable {G : SimpleGraph V} (K : ECol G)
 

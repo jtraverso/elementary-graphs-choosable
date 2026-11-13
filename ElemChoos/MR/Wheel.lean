@@ -91,7 +91,7 @@ theorem wheelSide_clique {W : Finset V} (hng : NoGemIn G W) {b1 b2 b3 b4 q u v :
       G.Adj x b2 → ((G.Adj x b3 ∧ ¬ G.Adj x b4) ∨ (¬ G.Adj x b3 ∧ G.Adj x b4)) →
       (y ≠ b1 ∧ y ≠ b2 ∧ y ≠ b3 ∧ y ≠ b4 ∧ y ≠ q) → G.Adj y b1 → G.Adj y b2 →
       ((G.Adj y b3 ∧ ¬ G.Adj y b4) ∨ (¬ G.Adj y b3 ∧ G.Adj y b4)) → x ≠ y → G.Adj x y := by
-    intro x hx y hy ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 ⟨yn1, yn2, yn3, yn4, ynq⟩ y1 y2 y34 hxy
+    rintro x hx y hy ⟨xn1, xn2, xn3, xn4, xnq⟩ x1 x2 x34 ⟨yn1, yn2, yn3, yn4, ynq⟩ y1 y2 y34 hxy
     by_contra hna
     rcases x34 with ⟨x3, x4⟩ | ⟨x3, x4⟩ <;> rcases y34 with ⟨y3, y4⟩ | ⟨y3, y4⟩
     · elem_contra K [b1, b4, x, y]

@@ -6,7 +6,10 @@
     "ElemChoos.chromaticChoosable_of_rep",
     "ElemChoos.isElementary_of_rep",
     "ElemChoos.rep_of_lineGraph",
-    "ElemChoos.rep_of_cobipartite"
+    "ElemChoos.rep_of_cobipartite",
+    "ElemChoos.rep_of_isElementary",
+    "ElemChoos.choosable_of_isElementary",
+    "ElemChoos.chromaticChoosable_of_isElementary"
   ],
   "definition_names": [],
   "permitted_axioms": [
